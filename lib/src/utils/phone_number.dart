@@ -25,13 +25,13 @@ enum PhoneNumberType {
 /// [PhoneNumber] contains detailed information about a phone number
 class PhoneNumber extends Equatable {
   /// Either formatted or unformatted String of the phone number
-  final String? phoneNumber;
+  final String phoneNumber;
 
   /// The Country [dialCode] of the phone number
-  final String? dialCode;
+  final String dialCode;
 
   /// Country [isoCode] of the phone number
-  final String? isoCode;
+  final String isoCode;
 
   /// [_hash] is used to compare instances of [PhoneNumber] object.
   final int _hash;
@@ -41,7 +41,7 @@ class PhoneNumber extends Equatable {
   int get hash => _hash;
 
   @override
-  List<Object?> get props => [phoneNumber, isoCode, dialCode];
+  List<Object> get props => [phoneNumber, isoCode, dialCode];
 
   PhoneNumber({
     this.phoneNumber,
@@ -51,7 +51,7 @@ class PhoneNumber extends Equatable {
 
   @override
   String toString() {
-    return phoneNumber!;
+    return phoneNumber;
   }
 
   /// Returns [PhoneNumber] which contains region information about
@@ -63,7 +63,7 @@ class PhoneNumber extends Equatable {
     RegionInfo regionInfo = await PhoneNumberUtil.getRegionInfo(
         phoneNumber: phoneNumber, isoCode: isoCode);
 
-    String? internationalPhoneNumber =
+    String internationalPhoneNumber =
         await PhoneNumberUtil.normalizePhoneNumber(
       phoneNumber: phoneNumber,
       isoCode: regionInfo.isoCode ?? isoCode,
@@ -80,15 +80,15 @@ class PhoneNumber extends Equatable {
   static Future<String> getParsableNumber(PhoneNumber phoneNumber) async {
     if (phoneNumber.isoCode != null) {
       PhoneNumber number = await getRegionInfoFromPhoneNumber(
-        phoneNumber.phoneNumber!,
-        phoneNumber.isoCode!,
+        phoneNumber.phoneNumber,
+        phoneNumber.isoCode,
       );
-      String? formattedNumber = await PhoneNumberUtil.formatAsYouType(
-        phoneNumber: number.phoneNumber!,
-        isoCode: number.isoCode!,
+      String formattedNumber = await PhoneNumberUtil.formatAsYouType(
+        phoneNumber: number.phoneNumber,
+        isoCode: number.isoCode,
       );
 
-      return formattedNumber!.replaceAll(
+      return formattedNumber.replaceAll(
         RegExp('^([\\+]?${number.dialCode}[\\s]?)'),
         '',
       );
@@ -100,12 +100,12 @@ class PhoneNumber extends Equatable {
 
   /// Returns a String of [phoneNumber] without [dialCode]
   String parseNumber() {
-    return this.phoneNumber!.replaceAll("${this.dialCode}", '');
+    return this.phoneNumber.replaceAll("${this.dialCode}", '');
   }
 
   /// For predefined phone number returns Country's [isoCode] from the dial code,
   /// Returns null if not found.
-  static String? getISO2CodeByPrefix(String prefix) {
+  static String getISO2CodeByPrefix(String prefix) {
     if (prefix.isNotEmpty) {
       prefix = prefix.startsWith('+') ? prefix : '+$prefix';
       var country = Countries.countryList
